@@ -23,6 +23,7 @@ public class Arithmetic {
         return a * b;
     }
 
+
     public static void main(String[] args) {
         System.out.println("Give me a number! (no decimals, please)");
         int num1 = StdIn.readInt();
