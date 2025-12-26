@@ -37,42 +37,39 @@ public class Percolation {
         // TODO: Fill in this method.
         validate(row, col);
 
-        int r = row - 1;
-        int c = col - 1;
+        if (open[row][col]) return;
 
-        if (open[r][c]) return;
-
-        open[r][c] = true;
+        open[row][col] = true;
         openCount++;
 
-        int index = index(r,c);
+        int index = index(row,col);
 
-        if (row == 1) {
+        if (row == 0) {
             uf.union(index, top);
             ufFull.union(index, top);
         }
-        if (row == n) {
+        if (row == n - 1) {
             uf.union(index, bottom);
         }
 
         // 连接上下左右
-        connectIfOpen(r - 1, c, r, c);
-        connectIfOpen(r + 1, c, r, c );
-        connectIfOpen(r, c - 1, r, c);
-        connectIfOpen(r, c + 1, r, c);
+        connectIfOpen(row - 1, col, index);
+        connectIfOpen(row + 1, col, index);
+        connectIfOpen(row, col - 1, index);
+        connectIfOpen(row, col + 1, index);
     }
 
     public boolean isOpen(int row, int col) {
         // TODO: Fill in this method.
         validate(row, col);
-        return open[row - 1][col - 1];
+        return open[row][col];
     }
 
     public boolean isFull(int row, int col) {
         // TODO: Fill in this method.
         validate(row, col);
         if (!isOpen(row, col)) return false;
-        return ufFull.connected(index(row -1, col -1), top);
+        return ufFull.connected(index(row, col), top);
     }
 
     public int numberOfOpenSites() {
@@ -88,7 +85,7 @@ public class Percolation {
     // TODO: Add any useful helper methods (we highly recommend this!).
     // TODO: Remove all TODO comments before submitting.
     private void validate(int row, int col) {
-        if (row < 1 || row > n || col < 1 || col > n) {
+        if (row < 0 || row > n - 1 || col < 0 || col > n - 1) {
             throw new IllegalArgumentException("row or col out of bounds");
         }
     }
@@ -97,8 +94,12 @@ public class Percolation {
         return r * n + c;
     }
 
-    public void connectIfOpen(int r1, int c1, int r2, int c2) {
-        if (r2 < 0 || r2 >= n || c2 < 0 || c2 >= n) return;
-
+    public void connectIfOpen(int row, int col, int index) {
+        if (row < 0 || row >= n || col < 0 || col >= n) return;
+        if (open[row][col]) {
+            int neighbor = index(row, col);
+            uf.union(index, neighbor);
+            ufFull.union(index, neighbor);
+        }
     }
 }
